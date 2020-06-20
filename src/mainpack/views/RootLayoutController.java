@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.AnchorPane;
@@ -28,6 +29,8 @@ public class RootLayoutController {
     private AnchorPane content;
     @FXML
     private AnchorPane leftPane;
+    @FXML
+    private Button addBtn;
 
     public static ObservableList<UsersEvent> list = FXCollections.observableArrayList();
 
@@ -59,7 +62,8 @@ public class RootLayoutController {
         content.setFocusTraversable(true);
 
         for (int i = 0; i < 10; i++) {
-            list.add(new UsersEvent("Task " + (i + 1), "note " + (i + 1), 1, new GregorianCalendar(), "On time"));
+            list.add(new UsersEvent("Task " + (i + 1),
+                    "note " + (i + 1), 1, new GregorianCalendar(), "On time"));
         }
         tasks.setItems(list);
 
@@ -78,7 +82,7 @@ public class RootLayoutController {
             try {
                 InformationPaneController controller = new InformationPaneController(t1, tasks.getSelectionModel().getSelectedIndex());
 
-                FXMLLoader loader = new FXMLLoader(RootLayoutController.this.getClass().getResource("InformationPane.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("InformationPane.fxml"));
                 loader.setController(controller);
                 Parent root = loader.load();
 
@@ -101,5 +105,16 @@ public class RootLayoutController {
             content.getChildren().remove(0);
             content.getChildren().add(0, parent);
         }
+    }
+
+    @FXML
+    private void addBtnClicked() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/SaveAndAdd.fxml"));
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+        informationStage.setScene(scene);
+        informationStage.setTitle("Add new event");
+        informationStage.show();
     }
 }

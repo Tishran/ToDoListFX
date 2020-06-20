@@ -1,8 +1,6 @@
 package mainpack.views;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -11,7 +9,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import mainpack.model.UsersEvent;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -21,7 +18,6 @@ import java.util.Date;
 public class InformationPaneController {
 
     private UsersEvent event;
-    private RootLayoutController rootLayoutController = new RootLayoutController();
     private int id = -1;
 
     @FXML
@@ -116,17 +112,14 @@ public class InformationPaneController {
         name.setDisable(false);
         notes.setEditable(true);
         notes.setDisable(false);
-        priority.setEditable(true);
         priority.setDisable(false);
         date.setEditable(true);
         date.setDisable(false);
         time.setEditable(true);
         time.setDisable(false);
-        repeat.setEditable(true);
         repeat.setDisable(false);
         place.setEditable(true);
         place.setDisable(false);
-        reminder.setEditable(true);
         reminder.setDisable(false);
         hashtags.setEditable(true);
         hashtags.setDisable(false);

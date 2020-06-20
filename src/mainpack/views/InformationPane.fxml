@@ -114,7 +114,7 @@
       </GridPane>
       <ButtonBar layoutX="674.0" layoutY="637.0" prefHeight="39.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0">
         <buttons>
-          <Button fx:id="done" mnemonicParsing="false" text="Done!" />
+          <Button fx:id="done" defaultButton="true" mnemonicParsing="false" text="Done!" />
             <Button fx:id="edit" mnemonicParsing="false" text="Edit" />
         </buttons>
       </ButtonBar>

@@ -1,31 +1,34 @@
-package mainpack.views;
+package mainpack.later;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import mainpack.model.UsersEvent;
+import mainpack.views.GeneralController;
+import mainpack.views.InformationPaneController;
+import mainpack.views.RootLayoutController;
 
 import java.io.IOException;
-import java.util.GregorianCalendar;
 
-public class InboxMainController {
+public class InboxMainController extends GeneralController {
 
     @FXML
     private ListView<UsersEvent> tasks;
 
     @FXML
     public void initialize() {
+        initListView();
+    }
+
+    @Override
+    protected void initListView() {
         tasks.setItems(RootLayoutController.list);
 
         tasks.setCellFactory(CheckBoxListCell.forListView(event -> {
@@ -43,7 +46,7 @@ public class InboxMainController {
             try {
                 InformationPaneController controller = new InformationPaneController(t1, tasks.getSelectionModel().getSelectedIndex());
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("InformationPane.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/InformationPane.fxml"));
                 loader.setController(controller);
                 Parent root = loader.load();
 
@@ -61,15 +64,8 @@ public class InboxMainController {
     }
 
     @FXML
-    private void addBtnClicked() throws IOException {
-        Stage addStage = new Stage();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/SaveAndAdd.fxml"));
-        Parent root = loader.load();
-
-        Scene scene = new Scene(root);
-        addStage.setScene(scene);
-        addStage.setTitle("Add new event");
-        addStage.show();
+    @Override
+    protected void addBtnClicked() throws IOException {
+        super.addBtnClicked();
     }
 }

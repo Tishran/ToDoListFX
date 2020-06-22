@@ -13,7 +13,7 @@ public class UsersEvent {
     private String notesForEvent;
     private int priority;
     private Calendar dateOfEvent;
-    private boolean repeat;
+    private String repeat;
     private String placeOfEvent;
     private String reminder;
     private ArrayList<String> hashtags;
@@ -22,7 +22,7 @@ public class UsersEvent {
 
     public UsersEvent() {}
 
-    public UsersEvent(String nameOfEvent, String notesForEvent, int priority, Calendar dateOfEvent, boolean repeat,
+    public UsersEvent(String nameOfEvent, String notesForEvent, int priority, Calendar dateOfEvent, String repeat,
                       String placeOfEvent, String reminder, ArrayList<String> hashtags, Instant start, Instant end) {
         this.nameOfEvent = nameOfEvent;
         this.notesForEvent = notesForEvent;
@@ -37,7 +37,7 @@ public class UsersEvent {
     }
 
     public UsersEvent(String nameOfEvent, String notesForEvent, int priority, Calendar dateOfEvent,
-                      boolean repeat, String placeOfEvent, String reminder, ArrayList<String> hashtags) {
+                      String repeat, String placeOfEvent, String reminder, String[] hashtags) {
         this.nameOfEvent = nameOfEvent;
         this.notesForEvent = notesForEvent;
         this.priority = priority;
@@ -45,10 +45,10 @@ public class UsersEvent {
         this.repeat = repeat;
         this.placeOfEvent = placeOfEvent;
         this.reminder = reminder;
-        this.hashtags = hashtags;
+        this.hashtags = new ArrayList<>(Arrays.asList(hashtags));
     }
 
-    public UsersEvent(String nameOfEvent, int priority, Calendar dateOfEvent, boolean repeat, String reminder) {
+    public UsersEvent(String nameOfEvent, int priority, Calendar dateOfEvent, String repeat, String reminder) {
         this.nameOfEvent = nameOfEvent;
         this.priority = priority;
         this.dateOfEvent = dateOfEvent;
@@ -56,7 +56,7 @@ public class UsersEvent {
         this.reminder = reminder;
     }
 
-    public UsersEvent(String nameOfEvent, String notesForEvent, int priority, Calendar dateOfEvent, boolean repeat, String reminder) {
+    public UsersEvent(String nameOfEvent, String notesForEvent, int priority, Calendar dateOfEvent, String repeat, String reminder) {
         this.nameOfEvent = nameOfEvent;
         this.notesForEvent = notesForEvent;
         this.priority = priority;
@@ -105,11 +105,11 @@ public class UsersEvent {
         this.dateOfEvent = dateOfEvent;
     }
 
-    public boolean isRepeat() {
+    public String isRepeat() {
         return repeat;
     }
 
-    public void setRepeat(boolean repeat) {
+    public void setRepeat(String repeat) {
         this.repeat = repeat;
     }
 

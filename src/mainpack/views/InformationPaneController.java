@@ -1,5 +1,7 @@
 package mainpack.views;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -25,7 +27,7 @@ public class InformationPaneController {
     @FXML
     private TextField notes;
     @FXML
-    private ComboBox<String> priority;
+    private ComboBox<Integer> priority;
     @FXML
     private DatePicker date;
     @FXML
@@ -60,6 +62,12 @@ public class InformationPaneController {
 
     @FXML
     public void initialize() {
+        ObservableList<Integer> typesOfPriority = FXCollections.observableArrayList(1, 2, 3, 4);
+        priority.setItems(typesOfPriority);
+
+        repeat.setItems(FXCollections.observableArrayList("never", "daily", "every week", "every month", "every year", "custom"));
+        reminder.setItems(FXCollections.observableArrayList("On time", "10 mins until", "None"));
+
         name.setText(event.getNameOfEvent());
         notes.setText(event.getNotesForEvent());
         priority.setPromptText(String.valueOf(event.getPriority()));
@@ -85,7 +93,7 @@ public class InformationPaneController {
     private void clickSave() {
         event.setNameOfEvent(name.getText());
         event.setNotesForEvent(notes.getText());
-        event.setPriority(Integer.parseInt(priority.getSelectionModel().getSelectedItem()));
+        event.setPriority(priority.getSelectionModel().getSelectedItem());
 
         LocalDate localDate = date.getValue();
         Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
@@ -94,8 +102,7 @@ public class InformationPaneController {
         cal.setTime(date);
         event.setDateOfEvent(cal);
 
-        String rep = repeat.getSelectionModel().getSelectedItem();
-        event.setRepeat(rep.equals("yes"));
+        event.setRepeat(repeat.getSelectionModel().getSelectedItem());
 
         event.setPlaceOfEvent(place.getText());
         event.setReminder(place.getText());

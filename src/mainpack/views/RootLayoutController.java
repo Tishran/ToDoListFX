@@ -1,6 +1,5 @@
 package mainpack.views;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -8,7 +7,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
-import mainpack.Main;
 import mainpack.model.UsersEvent;
 
 import java.io.IOException;
@@ -26,11 +24,6 @@ public class RootLayoutController {
 
     @FXML
     public void initialize() throws IOException {
-        for (int i = 0; i < 10; i++) {
-            list.add(new UsersEvent("Task " + (i + 1),
-                    "note " + (i + 1), 1, Calendar.getInstance(), "On time"));
-        }
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
         loader.setController(new MainController(list));
         setContent(loader.load());
@@ -43,22 +36,25 @@ public class RootLayoutController {
         modes.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
             try {
                 FXMLLoader otherContent = new FXMLLoader(getClass().getResource("MainView.fxml"));
+                Date start;
+                Date end;
 
                 Calendar c = Calendar.getInstance();
+
                 c.set(Calendar.HOUR_OF_DAY, 0);
                 c.set(Calendar.MINUTE, 0);
                 c.set(Calendar.SECOND, 0);
                 c.set(Calendar.MILLISECOND, 0);
-
-                Date start;
-                Date end;
                 switch (t1) {
                     case "Inbox":
                         otherContent.setController(new MainController(list));
                         break;
                     case "Today":
                         start = c.getTime();
-                        c.add(Calendar.DAY_OF_MONTH, 1);
+                        c.set(Calendar.HOUR_OF_DAY, 23);
+                        c.set(Calendar.MINUTE, 59);
+                        c.set(Calendar.SECOND, 59);
+                        c.set(Calendar.MILLISECOND, 999);
                         end = c.getTime();
 
                         otherContent.setController(new MainController(createNewList(start, end)));
@@ -67,6 +63,10 @@ public class RootLayoutController {
                         c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
                         start = c.getTime();
                         c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                        c.set(Calendar.HOUR_OF_DAY, 23);
+                        c.set(Calendar.MINUTE, 59);
+                        c.set(Calendar.SECOND, 59);
+                        c.set(Calendar.MILLISECOND, 999);
                         end = c.getTime();
 
                         otherContent.setController(new MainController(createNewList(start, end)));

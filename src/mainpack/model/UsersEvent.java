@@ -1,8 +1,5 @@
 package mainpack.model;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 
 
@@ -16,60 +13,16 @@ public class UsersEvent {
     private String repeat;
     private String placeOfEvent;
     private String reminder;
-    private ArrayList<String> hashtags;
-    private Instant start;
-    private Instant end;
 
-    public UsersEvent() {}
-
-    public UsersEvent(String nameOfEvent, String notesForEvent, int priority, Calendar dateOfEvent, String repeat,
-                      String placeOfEvent, String reminder, ArrayList<String> hashtags, Instant start, Instant end) {
+    public UsersEvent(String nameOfEvent, String notesForEvent, int priority,
+                      Calendar dateOfEvent, String repeat, String placeOfEvent,
+                      String reminder) {
         this.nameOfEvent = nameOfEvent;
         this.notesForEvent = notesForEvent;
         this.priority = priority;
         this.dateOfEvent = dateOfEvent;
         this.repeat = repeat;
         this.placeOfEvent = placeOfEvent;
-        this.reminder = reminder;
-        this.hashtags = hashtags;
-        this.start = start;
-        this.end = end;
-    }
-
-    public UsersEvent(String nameOfEvent, String notesForEvent, int priority, Calendar dateOfEvent,
-                      String repeat, String placeOfEvent, String reminder, String[] hashtags) {
-        this.nameOfEvent = nameOfEvent;
-        this.notesForEvent = notesForEvent;
-        this.priority = priority;
-        this.dateOfEvent = dateOfEvent;
-        this.repeat = repeat;
-        this.placeOfEvent = placeOfEvent;
-        this.reminder = reminder;
-        this.hashtags = new ArrayList<>(Arrays.asList(hashtags));
-    }
-
-    public UsersEvent(String nameOfEvent, int priority, Calendar dateOfEvent, String repeat, String reminder) {
-        this.nameOfEvent = nameOfEvent;
-        this.priority = priority;
-        this.dateOfEvent = dateOfEvent;
-        this.repeat = repeat;
-        this.reminder = reminder;
-    }
-
-    public UsersEvent(String nameOfEvent, String notesForEvent, int priority, Calendar dateOfEvent, String repeat, String reminder) {
-        this.nameOfEvent = nameOfEvent;
-        this.notesForEvent = notesForEvent;
-        this.priority = priority;
-        this.dateOfEvent = dateOfEvent;
-        this.repeat = repeat;
-        this.reminder = reminder;
-    }
-
-    public UsersEvent(String nameOfEvent, String notesForEvent, int priority, Calendar dateOfEvent, String reminder) {
-        this.nameOfEvent = nameOfEvent;
-        this.notesForEvent = notesForEvent;
-        this.priority = priority;
-        this.dateOfEvent = dateOfEvent;
         this.reminder = reminder;
     }
 
@@ -105,7 +58,7 @@ public class UsersEvent {
         this.dateOfEvent = dateOfEvent;
     }
 
-    public String isRepeat() {
+    public String getRepeat() {
         return repeat;
     }
 
@@ -127,30 +80,6 @@ public class UsersEvent {
 
     public void setReminder(String reminder) {
         this.reminder = reminder;
-    }
-
-    public ArrayList<String> getHashtags() {
-        return hashtags;
-    }
-
-    public void setHashtags(String[] hashtags) {
-        this.hashtags = new ArrayList<>(Arrays.asList(hashtags));
-    }
-
-    public Instant getStart() {
-        return start;
-    }
-
-    public void setStart(Instant start) {
-        this.start = start;
-    }
-
-    public Instant getEnd() {
-        return end;
-    }
-
-    public void setEnd(Instant end) {
-        this.end = end;
     }
 
     @Override

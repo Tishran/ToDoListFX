@@ -33,13 +33,13 @@ public class InformationPaneController {
     @FXML
     private TextField time;
     @FXML
+    private ComboBox<String> amOrPm;
+    @FXML
     private ComboBox<String> repeat;
     @FXML
     private TextField place;
     @FXML
     private ComboBox<String> reminder;
-    @FXML
-    private TextField hashtags;
     @FXML
     private Button edit;
     @FXML
@@ -52,14 +52,6 @@ public class InformationPaneController {
         this.id = id;
     }
 
-    /*public void setEvent(UsersEvent event) {
-        this.event = event;
-    }*/
-
-    /*public void setString(String string) {
-        this.string = string;
-    }*/
-
     @FXML
     public void initialize() {
         ObservableList<Integer> typesOfPriority = FXCollections.observableArrayList(1, 2, 3, 4);
@@ -67,23 +59,22 @@ public class InformationPaneController {
 
         repeat.setItems(FXCollections.observableArrayList("never", "daily", "every week", "every month", "every year", "custom"));
         reminder.setItems(FXCollections.observableArrayList("On time", "10 mins until", "None"));
+        amOrPm.setItems(FXCollections.observableArrayList("AM", "PM"));
 
         name.setText(event.getNameOfEvent());
         notes.setText(event.getNotesForEvent());
-        priority.setPromptText(String.valueOf(event.getPriority()));
+        priority.getSelectionModel().select(event.getPriority() - 1);
 
         Calendar calendar = event.getDateOfEvent();
         date.setValue(LocalDate.of(calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)));
-        time.setText("sdfas");
-        repeat.setPromptText("yes");
+                calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
+        amOrPm.getSelectionModel().select(calendar.get(Calendar.AM_PM));
+        time.setText(calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE));
+
+        repeat.getSelectionModel().select((event.getRepeat()));
         place.setText(event.getPlaceOfEvent());
-        reminder.setPromptText(event.getReminder());
-        try {
-            hashtags.setText(event.getHashtags().toString());
-        } catch (NullPointerException e) {
-            hashtags.setText("No hashtags");
-        }
+        reminder.getSelectionModel().select(event.getReminder());
+
 
         edit.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> clickEdit());
         done.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> clickDone());
@@ -100,13 +91,16 @@ public class InformationPaneController {
         Date date = Date.from(instant);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
+
+        String[] t = time.getText().split(":");
+        cal.set(Calendar.HOUR, Integer.parseInt(t[0]));
+        cal.set(Calendar.MINUTE, Integer.parseInt(t[1]));
         event.setDateOfEvent(cal);
 
         event.setRepeat(repeat.getSelectionModel().getSelectedItem());
 
         event.setPlaceOfEvent(place.getText());
         event.setReminder(place.getText());
-        event.setHashtags(hashtags.getText().split("\\s+"));
 
         Stage stage = (Stage) done.getScene().getWindow();
         stage.close();
@@ -116,20 +110,14 @@ public class InformationPaneController {
 
     private void clickEdit() {
         name.setEditable(true);
-        name.setDisable(false);
         notes.setEditable(true);
-        notes.setDisable(false);
         priority.setDisable(false);
-        date.setEditable(true);
         date.setDisable(false);
         time.setEditable(true);
-        time.setDisable(false);
+        amOrPm.setDisable(false);
         repeat.setDisable(false);
         place.setEditable(true);
-        place.setDisable(false);
         reminder.setDisable(false);
-        hashtags.setEditable(true);
-        hashtags.setDisable(false);
 
         save.setVisible(true);
         save.setDisable(false);

@@ -3,11 +3,13 @@ package mainpack.views;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.stage.Stage;
@@ -18,16 +20,23 @@ import java.io.IOException;
 public class MainController {
 
     private ObservableList<UsersEvent> events;
+    @FXML
+    private Label label;
+    @FXML
+    private ListView<UsersEvent> tasks;
 
     public MainController(ObservableList<UsersEvent> events) {
         this.events = events;
     }
 
     @FXML
-    private ListView<UsersEvent> tasks;
-
-    @FXML
     public void initialize() {
+        behavior();
+
+        events.addListener((ListChangeListener<UsersEvent>) change -> {
+            behavior();
+        });
+
         initListView();
     }
 
@@ -76,5 +85,21 @@ public class MainController {
         addStage.setScene(scene);
         addStage.setTitle("Add new event");
         addStage.show();
+    }
+
+    private void behavior() {
+        if (!events.isEmpty()) {
+            label.setVisible(false);
+            label.setDisable(true);
+
+            tasks.setDisable(false);
+            tasks.setVisible(true);
+        } else {
+            label.setVisible(true);
+            label.setDisable(false);
+
+            tasks.setDisable(true);
+            tasks.setVisible(false);
+        }
     }
 }

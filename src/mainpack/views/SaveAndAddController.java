@@ -3,13 +3,15 @@ package mainpack.views;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import mainpack.model.UsersEvent;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +40,12 @@ public class SaveAndAddController {
     private Button save;
     @FXML
     private Button cancel;
+
+    private MainController mainController;
+
+    public SaveAndAddController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     @FXML
     public void initialize() {
@@ -69,6 +77,7 @@ public class SaveAndAddController {
                 cal, repeat.getSelectionModel().getSelectedItem(), place.getText(), reminder.getSelectionModel().getSelectedItem());
 
         RootLayoutController.list.add(event);
+        FXCollections.sort(RootLayoutController.list, UsersEvent::compareTo);
 
         cancelClicked();
     }

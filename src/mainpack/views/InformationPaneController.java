@@ -21,6 +21,7 @@ public class InformationPaneController {
 
     private UsersEvent event;
     private int id = -1;
+    private MainController mainController;
 
     @FXML
     private TextField name;
@@ -47,9 +48,10 @@ public class InformationPaneController {
     @FXML
     private Button save;
 
-    public InformationPaneController(UsersEvent event, int id) {
+    public InformationPaneController(UsersEvent event, int id, MainController mainController) {
         this.event = event;
         this.id = id;
+        this.mainController = mainController;
     }
 
     @FXML
@@ -75,7 +77,6 @@ public class InformationPaneController {
         place.setText(event.getPlaceOfEvent());
         reminder.getSelectionModel().select(event.getReminder());
 
-
         edit.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> clickEdit());
         done.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> clickDone());
         save.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> clickSave());
@@ -95,6 +96,7 @@ public class InformationPaneController {
         String[] t = time.getText().split(":");
         cal.set(Calendar.HOUR, Integer.parseInt(t[0]));
         cal.set(Calendar.MINUTE, Integer.parseInt(t[1]));
+        cal.set(Calendar.AM_PM, amOrPm.getSelectionModel().getSelectedItem().equals("AM") ? Calendar.AM : Calendar.PM);
         event.setDateOfEvent(cal);
 
         event.setRepeat(repeat.getSelectionModel().getSelectedItem());
@@ -106,6 +108,7 @@ public class InformationPaneController {
         stage.close();
 
         RootLayoutController.list.set(id, event);
+        RootLayoutController.sorting();
     }
 
     private void clickEdit() {

@@ -7,25 +7,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import mainpack.model.UsersEvent;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 
 public class RootLayoutController {
     @FXML
     private ListView<String> modes;
     @FXML
-    private AnchorPane content;
+    private BorderPane content;
     @FXML
     private AnchorPane leftPane;
     public static ObservableList<UsersEvent> list = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() throws IOException {
+        FXCollections.sort(list, UsersEvent::compareTo);
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
-        loader.setController(new MainController(list));
+        loader.setController(new MainController(list, -1));
         setContent(loader.load());
 
         ObservableList<String> options = FXCollections.observableArrayList();
@@ -36,8 +38,6 @@ public class RootLayoutController {
         modes.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
             try {
                 FXMLLoader otherContent = new FXMLLoader(getClass().getResource("MainView.fxml"));
-                Date start;
-                Date end;
 
                 Calendar c = Calendar.getInstance();
 
@@ -47,45 +47,19 @@ public class RootLayoutController {
                 c.set(Calendar.MILLISECOND, 0);
                 switch (t1) {
                     case "Inbox":
-                        otherContent.setController(new MainController(list));
+                        otherContent.setController(new MainController(list, -1));
                         break;
                     case "Today":
-                        start = c.getTime();
-                        c.set(Calendar.HOUR_OF_DAY, 23);
-                        c.set(Calendar.MINUTE, 59);
-                        c.set(Calendar.SECOND, 59);
-                        c.set(Calendar.MILLISECOND, 999);
-                        end = c.getTime();
-
-                        otherContent.setController(new MainController(createNewList(start, end)));
+                        otherContent.setController(new MainController(createNewList(Calendar.DAY_OF_MONTH, c), Calendar.DAY_OF_MONTH));
                         break;
                     case "This week":
-                        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                        start = c.getTime();
-                        c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                        c.set(Calendar.HOUR_OF_DAY, 23);
-                        c.set(Calendar.MINUTE, 59);
-                        c.set(Calendar.SECOND, 59);
-                        c.set(Calendar.MILLISECOND, 999);
-                        end = c.getTime();
-
-                        otherContent.setController(new MainController(createNewList(start, end)));
+                        otherContent.setController(new MainController(createNewList(Calendar.WEEK_OF_YEAR, c), Calendar.WEEK_OF_YEAR));
                         break;
                     case "This month":
-                        c.set(Calendar.DAY_OF_MONTH, 1);
-                        start = c.getTime();
-                        c.add(Calendar.MONTH, 1);
-                        end = c.getTime();
-
-                        otherContent.setController(new MainController(createNewList(start, end)));
+                        otherContent.setController(new MainController(createNewList(Calendar.MONTH, c), Calendar.MONTH));
+                        break;
                     case "This year":
-                        c.set(Calendar.MONTH, Calendar.JANUARY);
-                        c.set(Calendar.DAY_OF_MONTH, 1);
-                        start = c.getTime();
-                        c.add(Calendar.MONTH, 12);
-                        end = c.getTime();
-
-                        otherContent.setController(new MainController(createNewList(start, end)));
+                        otherContent.setController(new MainController(createNewList(Calendar.YEAR, c), Calendar.YEAR));
                         break;
                 }
 
@@ -100,25 +74,29 @@ public class RootLayoutController {
     }
 
     private void setContent(Parent parent) {
-        if (content.getChildren().isEmpty()) {
-            content.getChildren().add(parent);
-        } else {
+        if (!content.getChildren().isEmpty()) {
             content.getChildren().remove(0);
-            content.getChildren().add(0, parent);
         }
+        content.setCenter(parent);
     }
 
-    private ObservableList<UsersEvent> createNewList(Date start, Date end) {
+    private ObservableList<UsersEvent> createNewList(int j, Calendar calendar) {
         ObservableList<UsersEvent> contentList = FXCollections.observableArrayList();
 
         for (UsersEvent i : RootLayoutController.list) {
-            Date curDate = i.getDateOfEvent().getTime();
+            Calendar curDate = i.getDateOfEvent();
 
-            if (!curDate.before(start) && !curDate.after(end)) {
-                contentList.add(i);
+            if (curDate.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)) {
+                if (curDate.get(j) == calendar.get(j)) {
+                    contentList.add(i);
+                }
             }
         }
 
         return contentList;
+    }
+
+    public static void sorting() {
+        FXCollections.sort(list, UsersEvent::compareTo);
     }
 }

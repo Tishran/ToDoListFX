@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 
 //For each user's event
-public class UsersEvent {
+public class UsersEvent implements Comparable<UsersEvent> {
 
     private String nameOfEvent;
     private String notesForEvent;
@@ -85,5 +85,10 @@ public class UsersEvent {
     @Override
     public String toString() {
         return nameOfEvent;
+    }
+
+    @Override
+    public int compareTo(UsersEvent event) {
+        return this.getDateOfEvent().after(event.getDateOfEvent()) ? 1 : 0;
     }
 }

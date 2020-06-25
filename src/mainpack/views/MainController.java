@@ -3,6 +3,7 @@ package mainpack.views;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,25 +17,31 @@ import javafx.stage.Stage;
 import mainpack.model.UsersEvent;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 public class MainController {
 
     private ObservableList<UsersEvent> events;
+    private int mode;
+
     @FXML
     private Label label;
     @FXML
     private ListView<UsersEvent> tasks;
 
-    public MainController(ObservableList<UsersEvent> events) {
+    public MainController(ObservableList<UsersEvent> events, int mode) {
         this.events = events;
+        this.mode = mode;
     }
 
     @FXML
     public void initialize() {
         behavior();
+        sorting();
 
         events.addListener((ListChangeListener<UsersEvent>) change -> {
             behavior();
+            Platform.runLater(() -> tasks.getSelectionModel().clearSelection());
         });
 
         initListView();
@@ -55,7 +62,8 @@ public class MainController {
 
         tasks.getSelectionModel().selectedItemProperty().addListener((observableValue, o, t1) -> {
             try {
-                InformationPaneController controller = new InformationPaneController(t1, tasks.getSelectionModel().getSelectedIndex());
+                InformationPaneController controller = new InformationPaneController(t1,
+                        tasks.getSelectionModel().getSelectedIndex(), this);
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/InformationPane.fxml"));
                 loader.setController(controller);
@@ -79,6 +87,7 @@ public class MainController {
         Stage addStage = new Stage();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/SaveAndAdd.fxml"));
+        loader.setController(new SaveAndAddController(this));
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
@@ -100,6 +109,36 @@ public class MainController {
 
             tasks.setDisable(true);
             tasks.setVisible(false);
+        }
+    }
+
+    public void setAndReturnList(int i, UsersEvent e) {
+        if (mode != -1) {
+            if (e.getDateOfEvent().get(mode) == Calendar.getInstance().get(mode)) {
+                events.set(i, e);
+            }
+        } else {
+            events.set(i, e);
+        }
+
+        sorting();
+    }
+
+    public void setAndReturnList(UsersEvent e) {
+        if (mode != -1) {
+            if (e.getDateOfEvent().get(mode) == Calendar.getInstance().get(mode)) {
+                events.add(e);
+            }
+        } else {
+            events.add(e);
+        }
+
+        sorting();
+    }
+
+    private void sorting() {
+        if (events.size() > 1) {
+            FXCollections.sort(events, UsersEvent::compareTo);
         }
     }
 }

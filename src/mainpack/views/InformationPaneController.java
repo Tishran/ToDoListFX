@@ -22,6 +22,7 @@ public class InformationPaneController {
     private UsersEvent event;
     private int id = -1;
     private MainController mainController;
+    private RootLayoutController root;
 
     @FXML
     private TextField name;
@@ -33,8 +34,6 @@ public class InformationPaneController {
     private DatePicker date;
     @FXML
     private TextField time;
-    @FXML
-    private ComboBox<String> amOrPm;
     @FXML
     private ComboBox<String> repeat;
     @FXML
@@ -48,10 +47,11 @@ public class InformationPaneController {
     @FXML
     private Button save;
 
-    public InformationPaneController(UsersEvent event, int id, MainController mainController) {
+    public InformationPaneController(UsersEvent event, int id, MainController mainController, RootLayoutController root) {
         this.event = event;
         this.id = id;
         this.mainController = mainController;
+        this.root = root;
     }
 
     @FXML
@@ -61,7 +61,6 @@ public class InformationPaneController {
 
         repeat.setItems(FXCollections.observableArrayList("never", "daily", "every week", "every month", "every year", "custom"));
         reminder.setItems(FXCollections.observableArrayList("On time", "10 mins until", "None"));
-        amOrPm.setItems(FXCollections.observableArrayList("AM", "PM"));
 
         name.setText(event.getNameOfEvent());
         notes.setText(event.getNotesForEvent());
@@ -70,8 +69,7 @@ public class InformationPaneController {
         Calendar calendar = event.getDateOfEvent();
         date.setValue(LocalDate.of(calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
-        amOrPm.getSelectionModel().select(calendar.get(Calendar.AM_PM));
-        time.setText(calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE));
+        time.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE));
 
         repeat.getSelectionModel().select((event.getRepeat()));
         place.setText(event.getPlaceOfEvent());
@@ -94,9 +92,8 @@ public class InformationPaneController {
         cal.setTime(date);
 
         String[] t = time.getText().split(":");
-        cal.set(Calendar.HOUR, Integer.parseInt(t[0]));
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0]));
         cal.set(Calendar.MINUTE, Integer.parseInt(t[1]));
-        cal.set(Calendar.AM_PM, amOrPm.getSelectionModel().getSelectedItem().equals("AM") ? Calendar.AM : Calendar.PM);
         event.setDateOfEvent(cal);
 
         event.setRepeat(repeat.getSelectionModel().getSelectedItem());
@@ -107,8 +104,8 @@ public class InformationPaneController {
         Stage stage = (Stage) done.getScene().getWindow();
         stage.close();
 
-        RootLayoutController.list.set(id, event);
-        RootLayoutController.sorting();
+        root.setList(id, event);
+        mainController.setAndReturnList(id, event);
     }
 
     private void clickEdit() {
@@ -117,7 +114,6 @@ public class InformationPaneController {
         priority.setDisable(false);
         date.setDisable(false);
         time.setEditable(true);
-        amOrPm.setDisable(false);
         repeat.setDisable(false);
         place.setEditable(true);
         reminder.setDisable(false);
@@ -127,7 +123,8 @@ public class InformationPaneController {
     }
 
     private void clickDone() {
-        RootLayoutController.list.remove(event);
+        root.removeItem(event);
+        mainController.removeItem(event);
         Stage stage = (Stage) done.getScene().getWindow();
         stage.close();
     }

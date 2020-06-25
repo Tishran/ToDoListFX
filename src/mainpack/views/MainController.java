@@ -23,15 +23,21 @@ public class MainController {
 
     private ObservableList<UsersEvent> events;
     private int mode;
+    private RootLayoutController root;
 
     @FXML
     private Label label;
     @FXML
     private ListView<UsersEvent> tasks;
 
-    public MainController(ObservableList<UsersEvent> events, int mode) {
+    public MainController(ObservableList<UsersEvent> events, int mode, RootLayoutController root) {
         this.events = events;
         this.mode = mode;
+        this.root = root;
+    }
+
+    public void removeItem(UsersEvent event) {
+        events.remove(event);
     }
 
     @FXML
@@ -54,7 +60,7 @@ public class MainController {
             observable.addListener((obs, wasSelected, isNowSelected) -> {
                 if (isNowSelected) {
                     events.remove(event);
-                    System.out.println(event + " is done!");
+                    root.removeItem(event);
                 }
             });
             return observable;
@@ -63,7 +69,7 @@ public class MainController {
         tasks.getSelectionModel().selectedItemProperty().addListener((observableValue, o, t1) -> {
             try {
                 InformationPaneController controller = new InformationPaneController(t1,
-                        tasks.getSelectionModel().getSelectedIndex(), this);
+                        tasks.getSelectionModel().getSelectedIndex(), this, root);
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/InformationPane.fxml"));
                 loader.setController(controller);
@@ -87,7 +93,7 @@ public class MainController {
         Stage addStage = new Stage();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/SaveAndAdd.fxml"));
-        loader.setController(new SaveAndAddController(this));
+        loader.setController(new SaveAndAddController(this, root));
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
@@ -117,8 +123,6 @@ public class MainController {
             if (e.getDateOfEvent().get(mode) == Calendar.getInstance().get(mode)) {
                 events.set(i, e);
             }
-        } else {
-            events.set(i, e);
         }
 
         sorting();
@@ -129,14 +133,12 @@ public class MainController {
             if (e.getDateOfEvent().get(mode) == Calendar.getInstance().get(mode)) {
                 events.add(e);
             }
-        } else {
-            events.add(e);
         }
 
         sorting();
     }
 
-    private void sorting() {
+    public void sorting() {
         if (events.size() > 1) {
             FXCollections.sort(events, UsersEvent::compareTo);
         }

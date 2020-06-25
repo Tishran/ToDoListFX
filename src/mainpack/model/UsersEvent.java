@@ -1,10 +1,11 @@
 package mainpack.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 
 //For each user's event
-public class UsersEvent implements Comparable<UsersEvent> {
+public class UsersEvent implements Comparable<UsersEvent>, Serializable {
 
     private String nameOfEvent;
     private String notesForEvent;

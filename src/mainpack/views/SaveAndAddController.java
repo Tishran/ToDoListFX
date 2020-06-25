@@ -29,8 +29,6 @@ public class SaveAndAddController {
     @FXML
     private TextField time;
     @FXML
-    private ComboBox<String> amOrPm;
-    @FXML
     private ComboBox<String> repeat;
     @FXML
     private TextField place;
@@ -42,9 +40,11 @@ public class SaveAndAddController {
     private Button cancel;
 
     private MainController mainController;
+    private RootLayoutController root;
 
-    public SaveAndAddController(MainController mainController) {
+    public SaveAndAddController(MainController mainController, RootLayoutController root) {
         this.mainController = mainController;
+        this.root = root;
     }
 
     @FXML
@@ -56,8 +56,6 @@ public class SaveAndAddController {
         repeat.getSelectionModel().select(0);
         reminder.setItems(FXCollections.observableArrayList("On time", "10 mins until", "None"));
         reminder.getSelectionModel().select(2);
-        amOrPm.setItems(FXCollections.observableArrayList("AM", "PM"));
-        amOrPm.getSelectionModel().select(1);
     }
 
     @FXML
@@ -69,15 +67,14 @@ public class SaveAndAddController {
         cal.setTime(date);
 
         String[] t = time.getText().split(":");
-        cal.set(Calendar.HOUR, Integer.parseInt(t[0]));
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0]));
         cal.set(Calendar.MINUTE, Integer.parseInt(t[1]));
-        cal.set(Calendar.AM_PM, amOrPm.getSelectionModel().getSelectedItem().equals("AM") ? Calendar.AM : Calendar.PM);
 
         UsersEvent event = new UsersEvent(name.getText(), notes.getText(), priority.getSelectionModel().getSelectedItem(),
                 cal, repeat.getSelectionModel().getSelectedItem(), place.getText(), reminder.getSelectionModel().getSelectedItem());
 
-        RootLayoutController.list.add(event);
-        FXCollections.sort(RootLayoutController.list, UsersEvent::compareTo);
+        mainController.setAndReturnList(event);
+        root.setList(event);
 
         cancelClicked();
     }

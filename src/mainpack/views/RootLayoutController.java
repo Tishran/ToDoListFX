@@ -2,6 +2,7 @@ package mainpack.views;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import mainpack.model.UsersEvent;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Calendar;
 
 public class RootLayoutController {
@@ -20,14 +21,36 @@ public class RootLayoutController {
     private BorderPane content;
     @FXML
     private AnchorPane leftPane;
-    public static ObservableList<UsersEvent> list = FXCollections.observableArrayList();
+    private ObservableList<UsersEvent> list;
+
+    public RootLayoutController(ObservableList<UsersEvent> list) {
+        this.list = list;
+    }
+
+    public void setList(int id, UsersEvent event) {
+        list.set(id, event);
+        sorting();
+    }
+
+    public void setList(UsersEvent event) {
+        list.add(event);
+        sorting();
+    }
+
+    public void removeItem(UsersEvent event) {
+        list.remove(event);
+    }
+
+    public ObservableList<UsersEvent> getList() {
+        return list;
+    }
 
     @FXML
     public void initialize() throws IOException {
         FXCollections.sort(list, UsersEvent::compareTo);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
-        loader.setController(new MainController(list, -1));
+        loader.setController(new MainController(list, -1, this));
         setContent(loader.load());
 
         ObservableList<String> options = FXCollections.observableArrayList();
@@ -47,19 +70,23 @@ public class RootLayoutController {
                 c.set(Calendar.MILLISECOND, 0);
                 switch (t1) {
                     case "Inbox":
-                        otherContent.setController(new MainController(list, -1));
+                        otherContent.setController(new MainController(list, -1, this));
                         break;
                     case "Today":
-                        otherContent.setController(new MainController(createNewList(Calendar.DAY_OF_MONTH, c), Calendar.DAY_OF_MONTH));
+                        otherContent.setController(new MainController(createNewList(Calendar.DAY_OF_MONTH, c),
+                                Calendar.DAY_OF_MONTH, this));
                         break;
                     case "This week":
-                        otherContent.setController(new MainController(createNewList(Calendar.WEEK_OF_YEAR, c), Calendar.WEEK_OF_YEAR));
+                        otherContent.setController(new MainController(createNewList(Calendar.WEEK_OF_YEAR, c),
+                                Calendar.WEEK_OF_YEAR, this));
                         break;
                     case "This month":
-                        otherContent.setController(new MainController(createNewList(Calendar.MONTH, c), Calendar.MONTH));
+                        otherContent.setController(new MainController(createNewList(Calendar.MONTH, c),
+                                Calendar.MONTH, this));
                         break;
                     case "This year":
-                        otherContent.setController(new MainController(createNewList(Calendar.YEAR, c), Calendar.YEAR));
+                        otherContent.setController(new MainController(createNewList(Calendar.YEAR, c),
+                                Calendar.YEAR, this));
                         break;
                 }
 
@@ -83,7 +110,7 @@ public class RootLayoutController {
     private ObservableList<UsersEvent> createNewList(int j, Calendar calendar) {
         ObservableList<UsersEvent> contentList = FXCollections.observableArrayList();
 
-        for (UsersEvent i : RootLayoutController.list) {
+        for (UsersEvent i : list) {
             Calendar curDate = i.getDateOfEvent();
 
             if (curDate.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)) {
@@ -96,7 +123,7 @@ public class RootLayoutController {
         return contentList;
     }
 
-    public static void sorting() {
+    public void sorting() {
         FXCollections.sort(list, UsersEvent::compareTo);
     }
 }

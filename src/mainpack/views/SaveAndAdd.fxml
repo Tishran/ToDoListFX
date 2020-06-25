@@ -86,11 +86,6 @@
                   <Insets right="150.0" />
                </GridPane.margin>
             </TextField>
-            <ComboBox fx:id="amOrPm" prefHeight="26.0" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
-               <GridPane.margin>
-                  <Insets left="300.0" />
-               </GridPane.margin>
-            </ComboBox>
          </children>
       </GridPane>
       <ButtonBar layoutX="674.0" layoutY="637.0" prefHeight="39.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0">

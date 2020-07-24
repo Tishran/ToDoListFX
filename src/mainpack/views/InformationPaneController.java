@@ -17,6 +17,8 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
+import static mainpack.views.MainController.*;
+
 public class InformationPaneController {
 
     private UsersEvent event;
@@ -29,7 +31,7 @@ public class InformationPaneController {
     @FXML
     private TextField notes;
     @FXML
-    private ComboBox<Integer> priority;
+    private ComboBox<String> priority;
     @FXML
     private DatePicker date;
     @FXML
@@ -56,15 +58,17 @@ public class InformationPaneController {
 
     @FXML
     public void initialize() {
-        ObservableList<Integer> typesOfPriority = FXCollections.observableArrayList(1, 2, 3, 4);
+        ObservableList<String> typesOfPriority = FXCollections.observableArrayList("None", "Low", "Medium", "High");
         priority.setItems(typesOfPriority);
 
-        repeat.setItems(FXCollections.observableArrayList("never", "daily", "every week", "every month", "every year", "custom"));
-        reminder.setItems(FXCollections.observableArrayList("On time", "10 mins until", "None"));
+        repeat.setItems(FXCollections.observableArrayList(NEVER, DAILY, EVERY_WEEK, EVERY_MONTH,
+                EVERY_YEAR, CUSTOM));
+        reminder.setItems(FXCollections.observableArrayList("None", "On time", "10 mins until", "20 mins until",
+                "1 hour until", "1 day until(9:00)", "2 days until(9:00)"));
 
         name.setText(event.getNameOfEvent());
         notes.setText(event.getNotesForEvent());
-        priority.getSelectionModel().select(event.getPriority() - 1);
+        priority.getSelectionModel().select(event.getPriority());
 
         Calendar calendar = event.getDateOfEvent();
         date.setValue(LocalDate.of(calendar.get(Calendar.YEAR),

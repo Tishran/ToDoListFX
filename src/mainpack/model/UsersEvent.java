@@ -9,13 +9,13 @@ public class UsersEvent implements Comparable<UsersEvent>, Serializable {
 
     private String nameOfEvent;
     private String notesForEvent;
-    private int priority;
+    private String priority;
     private Calendar dateOfEvent;
     private String repeat;
     private String placeOfEvent;
     private String reminder;
 
-    public UsersEvent(String nameOfEvent, String notesForEvent, int priority,
+    public UsersEvent(String nameOfEvent, String notesForEvent, String priority,
                       Calendar dateOfEvent, String repeat, String placeOfEvent,
                       String reminder) {
         this.nameOfEvent = nameOfEvent;
@@ -43,11 +43,11 @@ public class UsersEvent implements Comparable<UsersEvent>, Serializable {
         this.notesForEvent = notesForEvent;
     }
 
-    public int getPriority() {
+    public String getPriority() {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(String priority) {
         this.priority = priority;
     }
 

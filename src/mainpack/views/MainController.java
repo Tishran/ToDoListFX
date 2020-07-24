@@ -21,6 +21,13 @@ import java.util.Calendar;
 
 public class MainController {
 
+    public static final String NEVER = "Never";
+    public static final String DAILY = "Daily";
+    public static final String EVERY_WEEK = "Every week";
+    public static final String EVERY_MONTH = "Every month";
+    public static final String EVERY_YEAR = "Every year";
+    public static final String CUSTOM = "Custom";
+
     private ObservableList<UsersEvent> events;
     private int mode;
     private RootLayoutController root;
@@ -59,8 +66,31 @@ public class MainController {
             BooleanProperty observable = new SimpleBooleanProperty();
             observable.addListener((obs, wasSelected, isNowSelected) -> {
                 if (isNowSelected) {
-                    events.remove(event);
-                    root.removeItem(event);
+                    Calendar calendar = event.getDateOfEvent();
+
+                    switch(event.getRepeat()) {
+                        case DAILY:
+                            calendar.add(Calendar.DAY_OF_YEAR, 1);
+                            event.setDateOfEvent(calendar);
+                            break;
+                        case EVERY_WEEK:
+                            calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                            event.setDateOfEvent(calendar);
+                            break;
+                        case EVERY_MONTH:
+                            calendar.add(Calendar.MONTH, 1);
+                            event.setDateOfEvent(calendar);
+                            break;
+                        case EVERY_YEAR:
+                            calendar.add(Calendar.YEAR, 1);
+                            event.setDateOfEvent(calendar);
+                            break;
+                        case NEVER:
+                            events.remove(event);
+                            root.removeItem(event);
+                    }
+
+                    sorting();
                 }
             });
             return observable;
@@ -118,7 +148,7 @@ public class MainController {
         }
     }
 
-    public void setAndReturnList(int i, UsersEvent e) {
+    public void setAndReturnList(int i, UsersEvent e) {//написать switch на проверку repeat
         if (mode != -1) {
             if (e.getDateOfEvent().get(mode) == Calendar.getInstance().get(mode)) {
                 events.set(i, e);
